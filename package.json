@@ -1,0 +1,42 @@
+{
+	"name": "grounded",
+	"private": true,
+	"version": "1.0.0",
+	"description": "AI-powered analysis platform with 9 guardian perspectives",
+	"author": {
+		"name": "Bachtiar Rifai",
+		"email": "b@majumapan.net"
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@anthropic-ai/sdk": "^0.65.0",
+		"@sveltejs/adapter-auto": "^6.1.0",
+		"@sveltejs/kit": "^2.43.2",
+		"@sveltejs/vite-plugin-svelte": "^6.2.0",
+		"autoprefixer": "^10.4.21",
+		"eslint": "^9.37.0",
+		"postcss": "^8.5.6",
+		"prettier": "^3.6.2",
+		"svelte": "^5.39.5",
+		"svelte-check": "^4.3.2",
+		"tailwindcss": "^3.4.0",
+		"typescript": "^5.9.2",
+		"vite": "^7.1.7"
+	},
+	"dependencies": {
+		"@cloudflare/workers-types": "^4.20251011.0",
+		"@types/bcryptjs": "^2.4.6",
+		"@types/uuid": "^10.0.0",
+		"bcryptjs": "^3.0.2",
+		"uuid": "^13.0.0",
+		"wrangler": "^4.43.0"
+	}
+}

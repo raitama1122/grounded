@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffffff 50%, #ffedd5 100%);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+  
+  * {
+    border-color: rgb(229 231 235);
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 28px;
+    box-shadow: 
+      0 32px 64px -12px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  }
+
+  .glass-button {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 14px 28px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.025em;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .glass-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+  }
+  
+  .glass-button:hover::before {
+    left: 100%;
+  }
+
+  .glass-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+    color: #1f2937;
+    text-shadow: none;
+    border-color: rgba(249, 115, 22, 0.3);
+  }
+
+  .glass-button:active {
+    transform: translateY(0);
+  }
+
+  .guardian-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 28px;
+    box-shadow: 
+      0 32px 64px -12px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    padding: 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .guardian-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  }
+
+  .guardian-card:hover {
+    transform: scale(1.03) translateY(-12px);
+    box-shadow: 
+      0 40px 80px -12px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .floating-element {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .liquid-gradient {
+    background: linear-gradient(135deg, 
+      rgba(249, 115, 22, 0.9) 0%,
+      rgba(251, 146, 60, 0.7) 20%,
+      rgba(253, 186, 116, 0.5) 40%,
+      rgba(254, 215, 170, 0.7) 60%,
+      rgba(255, 237, 213, 0.6) 80%,
+      rgba(249, 115, 22, 0.9) 100%);
+    background-size: 600% 600%;
+    animation: liquidFlow 12s ease-in-out infinite;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #f97316, #fb923c, #fdba74, #fed7aa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-15px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+}
+
+@keyframes liquidFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 25%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  75% {
+    background-position: 25% 75%;
+  }
+}

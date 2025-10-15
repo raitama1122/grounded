@@ -52,10 +52,10 @@ export const GET: RequestHandler = async ({ platform, cookies, url }) => {
         SELECT 
           a.*,
           COUNT(gr.id) as guardian_count,
-          CASE WHEN is.id IS NOT NULL THEN 1 ELSE 0 END as has_summary
+          CASE WHEN ins.id IS NOT NULL THEN 1 ELSE 0 END as has_summary
         FROM analyses a
         LEFT JOIN guardian_responses gr ON a.id = gr.analysis_id
-        LEFT JOIN insight_summaries is ON a.id = is.analysis_id
+        LEFT JOIN insight_summaries ins ON a.id = ins.analysis_id
         WHERE a.user_id = ?
         GROUP BY a.id
         ORDER BY a.created_at DESC

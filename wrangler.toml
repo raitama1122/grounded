@@ -18,6 +18,12 @@ CLAUDE_MODEL = "claude-3-5-sonnet-20241022"
 [env.production]
 vars = { ENVIRONMENT = "production", CLAUDE_MODEL = "claude-3-5-sonnet-20241022" }
 
+# D1 Database for production
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "grounded-db"
+database_id = "58597121-3567-4e9a-90f6-0b15a2a12b8e"
+
 # Note: ANTHROPIC_API_KEY should be set in Cloudflare Pages dashboard
 # as a secret environment variable for security
 

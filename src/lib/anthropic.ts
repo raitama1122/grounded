@@ -1,7 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { config } from './config.js';
+import { config, getConfigWithPlatform } from './config.js';
 import { guardians, type Guardian } from './guardians.js';
 
+// Create a function to get Anthropic client with platform bindings
+function getAnthropicClient(platform?: any) {
+  const configWithPlatform = getConfigWithPlatform(platform);
+  return new Anthropic({
+    apiKey: configWithPlatform.anthropicApiKey,
+  });
+}
+
+// Default client for backward compatibility
 const anthropic = new Anthropic({
   apiKey: config.anthropicApiKey,
 });
@@ -12,10 +21,13 @@ export interface GuardianResponse {
   timestamp: Date;
 }
 
-export async function getGuardianResponse(guardian: Guardian, userQuery: string): Promise<GuardianResponse> {
+export async function getGuardianResponse(guardian: Guardian, userQuery: string, platform?: any): Promise<GuardianResponse> {
   try {
-    const message = await anthropic.messages.create({
-      model: config.claudeModel,
+    const anthropicClient = getAnthropicClient(platform);
+    const configWithPlatform = getConfigWithPlatform(platform);
+    
+    const message = await anthropicClient.messages.create({
+      model: configWithPlatform.claudeModel,
       max_tokens: 200,
       temperature: 0.7,
       system: guardian.systemPrompt,
@@ -44,8 +56,8 @@ export async function getGuardianResponse(guardian: Guardian, userQuery: string)
   }
 }
 
-export async function getAllGuardianResponses(userQuery: string): Promise<GuardianResponse[]> {
-  const promises = guardians.map(guardian => getGuardianResponse(guardian, userQuery));
+export async function getAllGuardianResponses(userQuery: string, platform?: any): Promise<GuardianResponse[]> {
+  const promises = guardians.map(guardian => getGuardianResponse(guardian, userQuery, platform));
   
   try {
     const responses = await Promise.all(promises);
@@ -78,7 +90,7 @@ export interface InsightSummary {
   };
 }
 
-export async function generateInsightSummary(responses: GuardianResponse[], originalQuery: string): Promise<InsightSummary> {
+export async function generateInsightSummary(responses: GuardianResponse[], originalQuery: string, platform?: any): Promise<InsightSummary> {
   const combinedResponses = responses.map(r => `${r.guardian.name}: ${r.response}`).join('\n\n');
   
   const summaryPrompt = `Based on these 9 different perspectives on the query "${originalQuery}", create a comprehensive insight summary.
@@ -139,8 +151,11 @@ Format your response as JSON with the following structure:
 }`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: config.claudeModel,
+    const anthropicClient = getAnthropicClient(platform);
+    const configWithPlatform = getConfigWithPlatform(platform);
+    
+    const message = await anthropicClient.messages.create({
+      model: configWithPlatform.claudeModel,
       max_tokens: 800,
       temperature: 0.3,
       messages: [

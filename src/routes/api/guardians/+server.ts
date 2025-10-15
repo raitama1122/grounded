@@ -97,10 +97,10 @@ export const POST: RequestHandler = async ({ request, platform, cookies }) => {
 
     try {
       // Get responses from all guardians in parallel
-      const responses = await getAllGuardianResponses(query.trim());
+      const responses = await getAllGuardianResponses(query.trim(), platform);
       
       // Generate insight summary
-      const summary = await generateInsightSummary(responses, query.trim());
+      const summary = await generateInsightSummary(responses, query.trim(), platform);
 
       // Save to database if available, otherwise use memory store
       if (db) {
@@ -148,6 +148,24 @@ export const POST: RequestHandler = async ({ request, platform, cookies }) => {
     }
   } catch (error) {
     console.error('Error in guardians API:', error);
+    
+    // Check if it's an API key issue
+    if (error instanceof Error) {
+      if (error.message.includes('API key') || error.message.includes('authentication')) {
+        return json({ 
+          error: 'API configuration error', 
+          details: 'Anthropic API key not configured properly'
+        }, { status: 500 });
+      }
+      
+      // Return more specific error in development
+      return json({ 
+        error: 'Internal server error',
+        details: error.message,
+        stack: error.stack?.split('\n').slice(0, 3).join('\n')
+      }, { status: 500 });
+    }
+    
     return json({ error: 'Internal server error' }, { status: 500 });
   }
 };

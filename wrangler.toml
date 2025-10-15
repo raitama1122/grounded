@@ -1,7 +1,7 @@
 name = "grounded"
-main = "src/app.js"
 compatibility_date = "2024-10-15"
-account_id = "1f14287e8693599be17bb11f84ad5921"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
 
 # D1 Database Configuration
 [[d1_databases]]

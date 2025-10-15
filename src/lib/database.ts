@@ -164,7 +164,13 @@ export class DatabaseService {
         consensus: summary.consensus,
         divergentViews: JSON.parse(summary.divergent_views),
         actionItems: JSON.parse(summary.action_items),
-        overallSentiment: summary.overall_sentiment
+        overallSentiment: summary.overall_sentiment,
+        sentimentDetails: summary.sentiment_details ? JSON.parse(summary.sentiment_details) : {
+          tone: summary.overall_sentiment,
+          confidence: "medium",
+          nuance: "Basic sentiment analysis"
+        },
+        guardianScores: summary.guardian_scores ? JSON.parse(summary.guardian_scores) : null
       } : null
     };
   }

@@ -81,7 +81,7 @@ export class UsageTracker {
     `).bind(now, userId, today).run();
 
     // If no record exists, create one
-    if (updateResult.changes === 0) {
+    if (updateResult.meta.changes === 0) {
       const usageId = uuidv4();
       await this.db.db.prepare(`
         INSERT INTO user_daily_usage (id, user_id, usage_date, query_count, created_at, updated_at)

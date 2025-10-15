@@ -89,15 +89,17 @@ export class DatabaseService {
   async saveInsightSummary(analysisId: string, summary: InsightSummary): Promise<void> {
     await this.db.prepare(`
       INSERT INTO insight_summaries 
-      (analysis_id, main_themes, consensus, divergent_views, action_items, overall_sentiment)
-      VALUES (?, ?, ?, ?, ?, ?)
+      (analysis_id, main_themes, consensus, divergent_views, action_items, overall_sentiment, sentiment_details, guardian_scores)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       analysisId,
       JSON.stringify(summary.mainThemes),
       summary.consensus,
       JSON.stringify(summary.divergentViews),
       JSON.stringify(summary.actionItems),
-      summary.overallSentiment
+      summary.overallSentiment,
+      JSON.stringify(summary.sentimentDetails),
+      summary.guardianScores ? JSON.stringify(summary.guardianScores) : null
     ).run();
   }
 
@@ -172,7 +174,7 @@ export class DatabaseService {
     await this.db.prepare(`
       INSERT INTO analytics (event_type, analysis_id, metadata)
       VALUES (?, ?, ?)
-    `).bind(eventType, analysisId, metadata ? JSON.stringify(metadata) : null).run();
+    `).bind(eventType, analysisId || null, metadata ? JSON.stringify(metadata) : null).run();
   }
 
   // Get recent analyses (for admin/stats)

@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, platform, cookies }) => {
 
     if (platform?.env?.DB) {
       db = new DatabaseService(platform.env.DB);
-      analysisId = await db.createAnalysis(query.trim(), userIp, userAgent, userId || undefined);
+      analysisId = await db.createAnalysis(query.trim(), userIp, userAgent, userId || null);
       
       // Log analytics event
       await db.logAnalyticsEvent('query_submitted', analysisId, {

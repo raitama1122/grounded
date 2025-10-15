@@ -254,9 +254,9 @@
         <span class="text-gray-600 font-bold">✕</span>
       </button>
 
-      <!-- Info Text -->
+      <!-- Terms and Privacy -->
       <p class="text-xs text-gray-500 text-center mt-4">
-        We'll create an account for you automatically if this is your first time.
+        By logging in you agree to our terms and privacy policy.
       </p>
     </div>
   </div>

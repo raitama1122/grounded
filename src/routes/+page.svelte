@@ -19,6 +19,32 @@
 	let canUseAnonymous = true;
 	let authContext: 'general' | 'my-ideas' | 'new-analysis' | 'continue-analysis' = 'general';
 	let usageLimitCard: any = null;
+	let textareaElement: HTMLTextAreaElement;
+
+	// Auto-resize textarea function
+	function autoResizeTextarea() {
+		if (textareaElement) {
+			// Reset height to auto to get the correct scrollHeight
+			textareaElement.style.height = 'auto';
+			// Set height to scrollHeight to fit content
+			textareaElement.style.height = textareaElement.scrollHeight + 'px';
+		}
+	}
+
+	// Handle input changes and auto-resize
+	function handleInput(event: Event) {
+		const target = event.target as HTMLTextAreaElement;
+		query = target.value;
+		autoResizeTextarea();
+	}
+
+	// Initialize textarea height on mount
+	onMount(() => {
+		// Set initial height after component mounts
+		if (textareaElement) {
+			autoResizeTextarea();
+		}
+	});
 
 	async function submitQuery() {
 		// If user needs to login (no matter if query is empty or not)
@@ -165,27 +191,27 @@
 	<title>Grounded - Stay Grounded About Your Ideas</title>
 </svelte:head>
 
-<main class="min-h-screen px-4 py-8 max-w-6xl mx-auto">
+<main class="h-screen sm:min-h-0 px-0 sm:px-4 md:px-6 py-6 sm:py-8 pb-32 sm:pb-32 max-w-6xl mx-auto flex flex-col sm:block relative">
 	<!-- Header -->
-	<div class="text-center mb-16">
-		<div class="floating-element mb-8">
-			<h1 class="text-6xl md:text-8xl font-black gradient-text mb-6 tracking-tight">
+	<div class="text-center mb-4 sm:mb-12 md:mb-16 flex-shrink-0 sm:flex-shrink">
+		<div class="floating-element mb-4 sm:mb-6 md:mb-8">
+			<h1 class="text-5xl sm:text-6xl md:text-8xl font-black gradient-text mb-4 sm:mb-6 tracking-tight">
 				Grounded
 			</h1>
-			<div class="max-w-2xl mx-auto">
-				<p class="text-2xl md:text-3xl text-gray-700 font-light leading-relaxed mb-4">
+			<div class="max-w-2xl mx-auto hidden sm:block">
+				<p class="text-xl sm:text-2xl md:text-3xl text-gray-700 font-light leading-relaxed mb-4">
 					Get diverse perspectives on your ideas
 				</p>
-				<p class="text-lg md:text-xl text-gray-600 font-medium">
+				<p class="text-base sm:text-lg md:text-xl text-gray-600 font-medium">
 					from <span class="gradient-text font-bold">9 AI guardians</span>
 				</p>
 			</div>
 		</div>
 		
-		<!-- Static accent elements -->
-		<div class="absolute top-20 left-10 w-4 h-4 bg-orange-400 rounded-full opacity-30"></div>
-		<div class="absolute top-32 right-16 w-3 h-3 bg-orange-300 rounded-full opacity-25"></div>
-		<div class="absolute top-16 right-1/3 w-2 h-2 bg-orange-500 rounded-full opacity-35"></div>
+		<!-- Static accent elements - Hidden on mobile -->
+		<div class="absolute top-20 left-10 w-4 h-4 bg-orange-400 rounded-full opacity-30 hidden sm:block"></div>
+		<div class="absolute top-32 right-16 w-3 h-3 bg-orange-300 rounded-full opacity-25 hidden sm:block"></div>
+		<div class="absolute top-16 right-1/3 w-2 h-2 bg-orange-500 rounded-full opacity-35 hidden sm:block"></div>
 	</div>
 
 	<!-- Usage Limit Card for Authenticated Users -->
@@ -196,29 +222,36 @@
 	{/if}
 
 	<!-- Query Input -->
-	<div class="glass-card shimmer p-8 md:p-10 mb-12 mx-auto max-w-5xl">
-		<div class="space-y-6">
-			<div class="text-center mb-6">
-				<h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+	<div class="glass-card shimmer p-0 sm:p-6 md:p-8 lg:p-10 mb-4 sm:mb-24 mx-2 sm:mx-auto max-w-none sm:max-w-5xl flex-1 sm:flex-none flex flex-col rounded-lg sm:rounded-3xl">
+		<div class="flex flex-col sm:h-full">
+			<!-- Header section -->
+			<div class="text-center flex-shrink-0 p-4 sm:p-0 sm:mb-6">
+				<h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
 					What's on your mind?
 				</h2>
-				<p class="text-lg text-gray-600 font-medium">
+				<p class="text-base sm:text-lg text-gray-600 font-medium hidden sm:block">
 					Ask for opinions, comparisons, or feedback on your ideas
 				</p>
 			</div>
 			
-			<textarea
-				id="query"
-				bind:value={query}
-				on:keypress={handleKeyPress}
-				placeholder="e.g., Should I start a food truck business? What do you think about remote work vs office work? I'm considering switching careers to tech..."
-				class="w-full h-40 p-6 rounded-3xl border-2 border-white/30 bg-white/60 backdrop-blur-sm resize-none focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-400 transition-all duration-500 text-lg placeholder-gray-500 shadow-inner"
-				disabled={isLoading}
-			></textarea>
+			<!-- Textarea section - expands with content -->
+			<div class="flex flex-col px-4 sm:px-0 pb-4 sm:pb-0">
+				<textarea
+					id="query"
+					bind:this={textareaElement}
+					bind:value={query}
+					on:input={handleInput}
+					on:keypress={handleKeyPress}
+					placeholder="e.g., Should I start a food truck business? What do you think about remote work vs office work? I'm considering switching careers to tech..."
+					class="w-full p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-white/30 bg-white/60 backdrop-blur-sm resize-none focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-400 transition-all duration-500 text-base sm:text-lg placeholder-gray-500 shadow-inner leading-relaxed overflow-hidden"
+					style="min-height: 120px; max-height: 400px;"
+					disabled={isLoading}
+				></textarea>
+			</div>
 			
 			<!-- Subtle login message for anonymous users -->
 			{#if !$user && !canUseAnonymous}
-				<div class="glass-card p-4 border-2 border-gray-200/50 bg-gradient-to-r from-gray-50/80 to-blue-50/60 backdrop-blur-sm">
+				<div class="glass-card p-4 mx-4 sm:mx-0 border-2 border-gray-200/50 bg-gradient-to-r from-gray-50/80 to-blue-50/60 backdrop-blur-sm">
 					<div class="flex items-center space-x-3">
 						<div class="text-xl">💡</div>
 						<div>
@@ -228,7 +261,8 @@
 				</div>
 			{/if}
 
-			<div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+			<!-- Desktop layout -->
+			<div class="hidden sm:flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
 				<p class="text-sm text-gray-600 font-medium">
 					💡 Press <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">Enter</kbd> to submit, <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">Shift+Enter</kbd> for new line
 				</p>
@@ -240,7 +274,19 @@
 					{isLoading ? '🔮 Consulting Guardians...' : (!$user && !canUseAnonymous ? 'Login' : '✨ Get Perspectives')}
 				</button>
 			</div>
+			
 		</div>
+	</div>
+
+	<!-- Mobile Sticky Button -->
+	<div class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200/50 p-4" style="padding-bottom: max(1rem, env(safe-area-inset-bottom)); position: fixed !important;">
+		<button
+			on:click={submitQuery}
+			disabled={isLoading || ($user || canUseAnonymous ? !query.trim() : false)}
+			class="w-full bg-gradient-to-r from-orange-500 to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-2xl shadow-lg transition-all duration-300 transform active:scale-95"
+		>
+			{isLoading ? '🔮 Consulting Guardians...' : (!$user && !canUseAnonymous ? 'Login to Continue' : '✨ Get Perspectives')}
+		</button>
 	</div>
 
 	<!-- Error Message -->
@@ -399,9 +445,9 @@
 		</div>
 	{/if}
 
-	<!-- Guardian Preview (when no results) -->
+	<!-- Guardian Preview (when no results) - Hidden on mobile -->
 	{#if responses.length === 0 && !isLoading}
-		<div class="mt-20">
+		<div class="mt-20 hidden md:block">
 			<div class="text-center mb-12">
 				<h2 class="text-4xl font-bold gradient-text mb-4">Meet Your Guardians</h2>
 				<p class="text-xl text-gray-600 font-medium">Each brings a unique perspective to help you think deeper</p>
@@ -426,53 +472,73 @@
 				{/each}
 			</div>
 			
-			<!-- Call to action -->
-			<div class="text-center mt-16">
-				<div class="glass-card p-8 max-w-2xl mx-auto">
-					<h3 class="text-2xl font-bold text-gray-800 mb-4">Ready to get started?</h3>
-					<p class="text-lg text-gray-600 mb-6">Share your idea, question, or dilemma above and let our guardians provide their unique insights.</p>
-					<div class="flex justify-center space-x-2">
-						<div class="w-3 h-3 bg-orange-400 rounded-full opacity-60"></div>
-						<div class="w-3 h-3 bg-orange-500 rounded-full opacity-80"></div>
-						<div class="w-3 h-3 bg-orange-600 rounded-full opacity-60"></div>
-					</div>
+		<!-- Call to action -->
+		<div class="text-center mt-16 mb-24">
+			<div class="glass-card p-8 max-w-2xl mx-auto">
+				<h3 class="text-2xl font-bold text-gray-800 mb-4">Ready to get started?</h3>
+				<p class="text-lg text-gray-600 mb-6">Share your idea, question, or dilemma above and let our guardians provide their unique insights.</p>
+				<div class="flex justify-center space-x-2">
+					<div class="w-3 h-3 bg-orange-400 rounded-full opacity-60"></div>
+					<div class="w-3 h-3 bg-orange-500 rounded-full opacity-80"></div>
+					<div class="w-3 h-3 bg-orange-600 rounded-full opacity-60"></div>
 				</div>
 			</div>
+		</div>
 		</div>
 	{/if}
 </main>
 
-<!-- Floating My Ideas Button for Logged-in Users -->
-{#if $user}
-	<div class="fixed bottom-6 right-6 z-40">
-		<button
-			on:click={() => goto('/dashboard')}
-			class="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 backdrop-blur-sm border border-white/20"
-		>
-			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-			</svg>
-			<span class="font-medium">My Ideas</span>
-		</button>
-	</div>
-{/if}
 
-<!-- Floating Background Elements -->
+<!-- Floating Action Buttons - Hidden on mobile -->
+<div class="hidden sm:block">
+	{#if $user}
+		<!-- My Ideas Button for Logged-in Users -->
+		<div class="fixed bottom-6 right-6 z-40">
+			<button
+				on:click={() => goto('/dashboard')}
+				class="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 backdrop-blur-sm border border-white/20"
+			>
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+				</svg>
+				<span class="font-medium">My Ideas</span>
+			</button>
+		</div>
+	{:else}
+		<!-- Login Button for Anonymous Users -->
+		<div class="fixed bottom-6 right-6 z-40">
+			<button
+				on:click={() => {
+					authContext = 'general';
+					showAuthModal = true;
+				}}
+				class="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 backdrop-blur-sm border border-white/20"
+			>
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 713-3h7a3 3 0 013 3v1"></path>
+				</svg>
+				<span class="font-medium">Login</span>
+			</button>
+		</div>
+	{/if}
+</div>
+
+<!-- Floating Background Elements - Reduced on mobile -->
 <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-	<!-- Large gradient orbs -->
-	<div class="absolute top-1/4 left-1/4 w-80 h-80 liquid-gradient rounded-full opacity-20 blur-3xl floating-element"></div>
-	<div class="absolute bottom-1/4 right-1/4 w-96 h-96 liquid-gradient rounded-full opacity-15 blur-3xl floating-element" style="animation-delay: 2s"></div>
-	<div class="absolute top-3/4 left-1/2 w-64 h-64 liquid-gradient rounded-full opacity-25 blur-3xl floating-element" style="animation-delay: 4s"></div>
+	<!-- Large gradient orbs - Hidden on mobile -->
+	<div class="absolute top-1/4 left-1/4 w-80 h-80 liquid-gradient rounded-full opacity-20 blur-3xl floating-element hidden sm:block"></div>
+	<div class="absolute bottom-1/4 right-1/4 w-96 h-96 liquid-gradient rounded-full opacity-15 blur-3xl floating-element hidden sm:block" style="animation-delay: 2s"></div>
+	<div class="absolute top-3/4 left-1/2 w-64 h-64 liquid-gradient rounded-full opacity-25 blur-3xl floating-element hidden sm:block" style="animation-delay: 4s"></div>
 	
-	<!-- Medium accent orbs -->
-	<div class="absolute top-1/2 right-1/3 w-32 h-32 bg-gradient-to-r from-orange-300 to-orange-500 rounded-full opacity-10 blur-2xl floating-element" style="animation-delay: 1s"></div>
-	<div class="absolute bottom-1/3 left-1/3 w-24 h-24 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full opacity-15 blur-xl floating-element" style="animation-delay: 3s"></div>
+	<!-- Medium accent orbs - Hidden on mobile -->
+	<div class="absolute top-1/2 right-1/3 w-32 h-32 bg-gradient-to-r from-orange-300 to-orange-500 rounded-full opacity-10 blur-2xl floating-element hidden sm:block" style="animation-delay: 1s"></div>
+	<div class="absolute bottom-1/3 left-1/3 w-24 h-24 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full opacity-15 blur-xl floating-element hidden sm:block" style="animation-delay: 3s"></div>
 	
-	<!-- Static accent elements -->
-	<div class="absolute top-1/3 right-1/4 w-4 h-4 bg-orange-400 rounded-full opacity-20"></div>
-	<div class="absolute bottom-1/2 left-1/5 w-3 h-3 bg-orange-500 rounded-full opacity-25"></div>
-	<div class="absolute top-2/3 right-1/5 w-2 h-2 bg-orange-300 rounded-full opacity-30"></div>
-	<div class="absolute bottom-1/4 left-2/3 w-3 h-3 bg-orange-600 rounded-full opacity-20"></div>
+	<!-- Static accent elements - Hidden on mobile -->
+	<div class="absolute top-1/3 right-1/4 w-4 h-4 bg-orange-400 rounded-full opacity-20 hidden sm:block"></div>
+	<div class="absolute bottom-1/2 left-1/5 w-3 h-3 bg-orange-500 rounded-full opacity-25 hidden sm:block"></div>
+	<div class="absolute top-2/3 right-1/5 w-2 h-2 bg-orange-300 rounded-full opacity-30 hidden sm:block"></div>
+	<div class="absolute bottom-1/4 left-2/3 w-3 h-3 bg-orange-600 rounded-full opacity-20 hidden sm:block"></div>
 </div>
 
 <!-- Authentication Modal -->
